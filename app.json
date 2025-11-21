@@ -21,7 +21,8 @@
         "NSMicrophoneUsageDescription": "This app needs microphone access to record audio with your vlogs.",
         "NSPhotoLibraryUsageDescription": "This app needs photo library access to save your recorded vlogs.",
         "NSLocationWhenInUseUsageDescription": "This app needs location access to capture GPS coordinates during check-ins only.",
-        "UIBackgroundModes": ["remote-notification"]
+        "UIBackgroundModes": ["remote-notification"],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {

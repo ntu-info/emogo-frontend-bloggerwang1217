@@ -1,5 +1,9 @@
 # I'm Emo Now
 
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/1M59WghA)
+[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=21773999&assignment_repo_type=AssignmentRepo)
+# Expo Router Minimal Working Example
+
 An experience-sampling mobile app that collects multimodal emotional data through daily check-ins. Inspired by the "Emotions on the Go" study from University of Wisconsin-Madison.
 
 ## App URI
@@ -88,7 +92,7 @@ The app features an **"Atmospheric Sci-Fi"** design system inspired by the Flexo
 - Expo CLI: `npm install -g expo-cli`
 - Expo Go app (iOS/Android) or development build
 
-### Setup Steps
+### How to run
 
 1. **Clone the repository:**
    ```bash
@@ -96,38 +100,49 @@ The app features an **"Atmospheric Sci-Fi"** design system inspired by the Flexo
    cd I-m-emo-now
    ```
 
-2. **Install dependencies:**
+2. Install dependencies:
+
    ```bash
    npm install
    ```
 
-3. **Start the development server:**
+2. Start the dev server:
+
    ```bash
-   npx expo start
+   npx expo start --tunnel
    ```
 
-4. **Run on device:**
-   - **iOS (Physical Device):** Scan QR code with Camera app, opens in Expo Go
-   - **Android (Physical Device):** Scan QR code with Expo Go app
-   - **iOS Simulator:** Press `i` in terminal
-   - **Android Emulator:** Press `a` in terminal
+3. Open the app on a device or emulator using the Expo dev tools.
+
 
 ### Building for Production
 
 To create a standalone build for production:
 
 ```bash
+# Install Expo-Dev-Client
+npx expo install expo-dev-client
+
+# Start
+npx expo start
+
 # Install EAS CLI
 npm install -g eas-cli
+
+# Login (or Sign up)
+eas login
+
+# Initiation
+eas init
 
 # Configure EAS project
 eas build:configure
 
 # Build for iOS
-eas build --platform ios
+eas build --platform ios --profile preview
 
 # Build for Android
-eas build --platform android
+eas build --platform android --profile preview
 ```
 
 ## Usage Instructions
