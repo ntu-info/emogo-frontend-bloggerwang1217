@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,13 +8,14 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Slider from '@react-native-community/slider';
 import { Ionicons } from '@expo/vector-icons';
 
 import { Colors, Typography, Spacing, ButtonStyles, BorderRadius } from '@/constants/theme';
 import { insertSession } from '@/utils/database';
-import { getCurrentLocation } from '@/utils/location';
+import { getCurrentLocation, requestLocationPermissions } from '@/utils/location';
+import StarsBackground from '@/components/stars-background';
 
 // Emotion emojis for the 1-5 scale
 const EMOTION_EMOJIS = ['😢', '😟', '😐', '😊', '😄'];
@@ -22,9 +23,27 @@ const EMOTION_LABELS = ['Very Sad', 'Sad', 'Neutral', 'Happy', 'Very Happy'];
 
 export default function HomeScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ videoRecorded?: string }>();
   const [emotionScore, setEmotionScore] = useState<number>(3); // Default to neutral
   const [videoFilename, setVideoFilename] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Request location permissions on mount
+  useEffect(() => {
+    const requestPermissions = async () => {
+      await requestLocationPermissions();
+    };
+    requestPermissions();
+  }, []);
+
+  // Handle video recorded parameter from camera screen
+  useEffect(() => {
+    if (params.videoRecorded) {
+      setVideoFilename(params.videoRecorded);
+      // Clear the parameter to avoid re-triggering
+      router.setParams({ videoRecorded: undefined });
+    }
+  }, [params.videoRecorded, router]);
 
   const handleEmotionChange = (value: number) => {
     setEmotionScore(Math.round(value));
@@ -32,6 +51,22 @@ export default function HomeScreen() {
 
   const handleRecordVideo = () => {
     router.push('/camera');
+  };
+
+  // Get emotion card styles based on emotion score
+  const getEmotionCardStyle = () => {
+    const emotionScoreIndex = emotionScore - 1; // 0-4 index
+    const emotionKeys = ['veryNegative', 'negative', 'neutral', 'positive', 'veryPositive'] as const;
+    const key = emotionKeys[emotionScoreIndex];
+
+    return {
+      backgroundColor: Colors.emotionBackground[key],
+      shadowColor: Colors.emotionGlow[key],
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.6,
+      shadowRadius: 12,
+      elevation: 8,
+    };
   };
 
   const handleSubmit = async () => {
@@ -43,7 +78,7 @@ export default function HomeScreen() {
     try {
       setIsSubmitting(true);
 
-      // Get current location
+      // Get current location (permission already requested on mount)
       const location = await getCurrentLocation();
 
       // Create session data
@@ -58,13 +93,26 @@ export default function HomeScreen() {
       // Insert into database
       await insertSession(sessionData);
 
-      // Show success message
+      // Show success message with better feedback
+      const locationStatus = location ? 'with location' : 'without location';
       Alert.alert(
-        'Check-In Complete',
-        'Your emotional data has been recorded successfully!',
+        'Check-In Complete! ✓',
+        `Your emotional check-in has been saved ${locationStatus}.\n\nEmotion: ${
+          EMOTION_LABELS[emotionScore - 1]
+        }\nVideo: Saved to camera roll`,
         [
           {
-            text: 'OK',
+            text: 'View History',
+            onPress: () => {
+              // Reset form and navigate to history
+              setEmotionScore(3);
+              setVideoFilename(null);
+              router.push('/(drawer)/history');
+            },
+          },
+          {
+            text: 'Done',
+            style: 'cancel',
             onPress: () => {
               // Reset form
               setEmotionScore(3);
@@ -75,21 +123,33 @@ export default function HomeScreen() {
       );
     } catch (error) {
       console.error('Error submitting check-in:', error);
-      Alert.alert('Error', 'Failed to save your check-in. Please try again.');
+
+      let errorMessage = 'Failed to save your check-in. Please try again.';
+      if (error instanceof Error) {
+        if (error.message.includes('database')) {
+          errorMessage = 'Database error. Please restart the app and try again.';
+        } else if (error.message.includes('permission')) {
+          errorMessage = 'Location permission denied. Check-in saved without location.';
+        }
+      }
+
+      Alert.alert('Error', errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <View style={styles.container}>
+      <StarsBackground />
+      <ScrollView contentContainerStyle={styles.contentContainer}>
       <View style={styles.header}>
         <Text style={styles.title}>How are you feeling?</Text>
         <Text style={styles.subtitle}>Share your emotional state right now</Text>
       </View>
 
       {/* Emotion Slider Section */}
-      <View style={styles.emotionSection}>
+      <View style={[styles.emotionSection, getEmotionCardStyle()]}>
         <View style={styles.emojiDisplay}>
           <Text style={styles.emojiLarge}>{EMOTION_EMOJIS[emotionScore - 1]}</Text>
           <Text style={styles.emotionLabel}>{EMOTION_LABELS[emotionScore - 1]}</Text>
@@ -165,7 +225,8 @@ export default function HomeScreen() {
           Location will be captured when you submit
         </Text>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 

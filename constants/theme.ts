@@ -73,6 +73,24 @@ const BaseColors = {
     veryPositive: AppColors.mutedGreen,     // Score 5
   },
 
+  // Emotion background colors (dark theme - for card backgrounds)
+  emotionBackground: {
+    veryNegative: '#2A1515',    // Deep dark red - Score 1
+    negative: '#3D2515',        // Medium dark red - Score 2
+    neutral: '#3C3420',         // Deep dark gold - Score 3
+    positive: '#2F3520',        // Deep dark green - Score 4
+    veryPositive: '#283A20',    // Deep dark green - Score 5
+  },
+
+  // Emotion glow colors (for shadow/border effects)
+  emotionGlow: {
+    veryNegative: AppColors.softRust,      // Deep red - Score 1
+    negative: '#D65C4F',                    // Medium red - Score 2
+    neutral: AppColors.mutedGold,          // Gold - Score 3
+    positive: AppColors.mutedGreen,        // Medium green - Score 4
+    veryPositive: '#A8C660',                // Bright green - Score 5
+  },
+
   // Borders and dividers
   border: {
     default: AppColors.inputBorder,
