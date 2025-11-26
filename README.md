@@ -8,11 +8,9 @@ An experience-sampling mobile app that collects multimodal emotional data throug
 
 ## App URI
 
-🚀 **Expo Go URI:** `exp://[your-expo-url]`
+🚀 ![Android Preview Build](https://expo.dev/accounts/bloggerwang1217/projects/Im-emo-now/builds/9788ccbe-e2c4-4d44-bc99-60e600fcf28d)
 
-📱 **QR Code:** Scan with Expo Go app
-
-*Note: The app URI will be available after running `npx expo start` and publishing to Expo.*
+📱 **QR Code:** Scan it to download the apk.
 
 ## Project Description
 
