@@ -6,7 +6,7 @@ import {
   useMicrophonePermissions,
 } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import {
   ActivityIndicator,
@@ -21,6 +21,7 @@ import { BorderRadius, Colors, Spacing, Typography } from '@/constants/theme';
 
 export default function CameraScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ currentEmotionScore?: string }>();
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraType>('front');
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
@@ -106,10 +107,13 @@ export default function CameraScreen() {
           // Generate filename using timestamp
           const filename = `vlog_${new Date().getTime()}.mp4`;
 
-          // Navigate back with success parameter
+          // Navigate back with parameters (preserve emotionScore)
           router.navigate({
             pathname: '/(drawer)',
-            params: { videoRecorded: filename },
+            params: {
+              videoRecorded: filename,
+              emotionScore: params.currentEmotionScore,
+            },
           });
         } catch (libraryError) {
           console.error('Error saving to media library:', libraryError);
@@ -117,7 +121,10 @@ export default function CameraScreen() {
           const filename = `vlog_${new Date().getTime()}.mp4`;
           router.navigate({
             pathname: '/(drawer)',
-            params: { videoRecorded: filename },
+            params: {
+              videoRecorded: filename,
+              emotionScore: params.currentEmotionScore,
+            },
           });
         }
       } else {

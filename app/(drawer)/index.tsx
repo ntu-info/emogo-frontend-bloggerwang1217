@@ -1,21 +1,21 @@
-import { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import Slider from '@react-native-community/slider';
 import { Ionicons } from '@expo/vector-icons';
+import Slider from '@react-native-community/slider';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-import { Colors, Typography, Spacing, ButtonStyles, BorderRadius } from '@/constants/theme';
+import StarsBackground from '@/components/stars-background';
+import { BorderRadius, ButtonStyles, Colors, Spacing, Typography } from '@/constants/theme';
 import { insertSession } from '@/utils/database';
 import { getCurrentLocation, requestLocationPermissions } from '@/utils/location';
-import StarsBackground from '@/components/stars-background';
 
 // Emotion emojis for the 1-5 scale
 const EMOTION_EMOJIS = ['😢', '😟', '😐', '😊', '😄'];
@@ -23,7 +23,7 @@ const EMOTION_LABELS = ['Very Sad', 'Sad', 'Neutral', 'Happy', 'Very Happy'];
 
 export default function HomeScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ videoRecorded?: string }>();
+  const params = useLocalSearchParams<{ videoRecorded?: string; emotionScore?: string }>();
   const [emotionScore, setEmotionScore] = useState<number>(3); // Default to neutral
   const [videoFilename, setVideoFilename] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,17 +40,24 @@ export default function HomeScreen() {
   useEffect(() => {
     if (params.videoRecorded) {
       setVideoFilename(params.videoRecorded);
-      // Clear the parameter to avoid re-triggering
-      router.setParams({ videoRecorded: undefined });
+      // Restore emotionScore if provided
+      if (params.emotionScore) {
+        setEmotionScore(parseInt(params.emotionScore, 10));
+      }
+      // Clear the parameters to avoid re-triggering
+      router.setParams({ videoRecorded: undefined, emotionScore: undefined });
     }
-  }, [params.videoRecorded, router]);
+  }, [params.videoRecorded, params.emotionScore, router]);
 
   const handleEmotionChange = (value: number) => {
     setEmotionScore(Math.round(value));
   };
 
   const handleRecordVideo = () => {
-    router.push('/camera');
+    router.push({
+      pathname: '/camera',
+      params: { currentEmotionScore: emotionScore.toString() },
+    });
   };
 
   // Get emotion card styles based on emotion score
@@ -119,7 +126,15 @@ export default function HomeScreen() {
               setVideoFilename(null);
             },
           },
-        ]
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => {
+            // Reset form when dismissed (Android back button or tap outside)
+            setEmotionScore(3);
+            setVideoFilename(null);
+          },
+        }
       );
     } catch (error) {
       console.error('Error submitting check-in:', error);
