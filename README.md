@@ -115,6 +115,47 @@ The app features an **"Atmospheric Sci-Fi"** design system inspired by the Flexo
 3. Open the app on a device or emulator using the Expo dev tools.
 
 
+### Building for Development
+
+For faster development iteration, create a development build that connects to your Metro bundler:
+
+```bash
+# Install EAS CLI (if not already installed)
+npm install -g eas-cli
+
+# Login to Expo
+eas login
+
+# Build development version for Android
+eas build --profile development --platform android
+
+# Or for iOS
+eas build --profile development --platform ios
+```
+
+**Development Build Workflow:**
+
+1. **One-Time Setup:** Build and install the development APK/IPA on your device (wait ~10-20 minutes)
+2. **Daily Development:**
+   - Start Metro bundler: `npx expo start`
+   - Scan QR code with your development build app
+   - Make code changes → Press `r` in terminal to reload
+   - No need to rebuild unless you change native dependencies or app.json
+
+**When to rebuild:**
+- ✅ Adding/removing native packages (e.g., expo-camera)
+- ✅ Modifying app.json native configurations (permissions, plugins)
+- ❌ NOT needed for TypeScript/JavaScript/UI changes (just press `r`)
+
+**Comparison:**
+
+| Build Type | Use Case | Reload Time | Sharing |
+|:-----------|:---------|:------------|:--------|
+| **Development** | Active development | Instant (press `r`) | Requires your computer |
+| **Preview** | Testing & sharing | ~15 min rebuild | Standalone APK |
+| **Production** | App store release | ~20 min rebuild | Store-ready |
+
+
 ### Building for Production
 
 To create a standalone build for production:
