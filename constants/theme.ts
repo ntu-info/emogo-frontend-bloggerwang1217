@@ -74,21 +74,23 @@ const BaseColors = {
   },
 
   // Emotion background colors (dark theme - for card backgrounds)
+  // Blue (sad) ↔ Orange (happy) complementary color gradient
   emotionBackground: {
-    veryNegative: '#2A1515',    // Deep dark red - Score 1
-    negative: '#3D2515',        // Medium dark red - Score 2
-    neutral: '#3C3420',         // Deep dark gold - Score 3
-    positive: '#2F3520',        // Deep dark green - Score 4
-    veryPositive: '#283A20',    // Deep dark green - Score 5
+    veryNegative: '#1A2530',    // Deep dark blue - Score 1 (Very Sad)
+    negative: '#253240',        // Dark blue-gray - Score 2 (Sad)
+    neutral: '#35302A',         // Neutral brown-gray (middle) - Score 3 (Neutral)
+    positive: '#602d00ff',        // Brighter warm orange - Score 4 (Happy)
+    veryPositive: '#9c5300ff',    // Brighter warm orange-yellow - Score 5 (Very Happy)
   },
 
   // Emotion glow colors (for shadow/border effects)
+  // Blue (sad) ↔ Orange (happy) complementary color gradient
   emotionGlow: {
-    veryNegative: AppColors.softRust,      // Deep red - Score 1
-    negative: '#D65C4F',                    // Medium red - Score 2
-    neutral: AppColors.mutedGold,          // Gold - Score 3
-    positive: AppColors.mutedGreen,        // Medium green - Score 4
-    veryPositive: '#A8C660',                // Bright green - Score 5
+    veryNegative: '#5B7A9E',    // Cool blue - Score 1 (Very Sad)
+    negative: '#6B89AB',        // Lighter blue - Score 2 (Sad)
+    neutral: '#9E8A6B',         // Neutral tan (middle) - Score 3 (Neutral)
+    positive: '#d39962ff',        // Bright warm orange - Score 4 (Happy)
+    veryPositive: '#FFB84D',    // Bright vibrant golden orange - Score 5 (Very Happy)
   },
 
   // Borders and dividers
