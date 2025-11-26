@@ -33,6 +33,13 @@ yarn-error.*
 # local env files
 .env*.local
 
+# Editor temporary files
+*.swp
+*.swo
+*.swn
+*~
+.*.sw?
+
 # typescript
 *.tsbuildinfo
 
