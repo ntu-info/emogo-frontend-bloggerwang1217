@@ -208,9 +208,12 @@ export default function HomeScreen() {
 
       {/* Submit Button */}
       <TouchableOpacity
-        style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
+        style={[
+          styles.submitButton,
+          (isSubmitting || !videoFilename) && styles.submitButtonDisabled,
+        ]}
         onPress={handleSubmit}
-        disabled={isSubmitting || !videoFilename}>
+        disabled={isSubmitting}>
         {isSubmitting ? (
           <ActivityIndicator color={Colors.text.inverse} />
         ) : (
